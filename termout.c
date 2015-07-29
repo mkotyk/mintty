@@ -10,6 +10,7 @@
 #include "charset.h"
 #include "child.h"
 #include "print.h"
+#include "keycolor.h"
 
 #include <sys/termios.h>
 
@@ -475,6 +476,25 @@ do_sgr(void)
   term.erase_char.attr = attr & (ATTR_FGMASK | ATTR_BGMASK);
 }
 
+static void
+do_keylight(void)
+{
+    if((term.csi_argv[0] == 7) && (term.csi_argc == 5)) {
+        /* Set individual key color. */
+        /* <ESC>[7;<key>;<r>;<g>;<b>q */
+        int keycode = (term.csi_argv[1] & 0xFF);
+        int rgb = (term.csi_argv[2] & 0xFF) << 16 |
+                  (term.csi_argv[3] & 0xFF) << 8 |
+                  (term.csi_argv[4] & 0xFF);                  
+        keycolor_set_color(keycode, rgb);
+    }
+    else if((term.csi_argv[0] == 8) && (term.csi_argc == 2)) {
+        /* Select a keyboard profile */
+        /* <ESC>[8;<profnum>q */
+        keycolor_set_profile(term.csi_argv[1]);
+    }
+}
+
 /*
  * Set terminal modes in escape arguments to state.
  */
@@ -743,6 +763,8 @@ do_csi(uchar c)
     }
     when 'm':        /* SGR: set graphics rendition */
       do_sgr();
+    when 'q':
+      do_keylight();
     when 's':        /* save cursor */
       save_cursor();
     when 'u':        /* restore cursor */

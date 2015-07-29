@@ -6,6 +6,7 @@
 
 #include "charset.h"
 #include "child.h"
+#include "keycolor.h"
 
 #include <math.h>
 #include <windowsx.h>
@@ -320,6 +321,7 @@ win_key_down(WPARAM wp, LPARAM lp)
     altgr = ralt | ctrl_lalt_altgr;
 
   mod_keys mods = shift * MDK_SHIFT | alt * MDK_ALT | ctrl * MDK_CTRL;
+  keycolor_set_modifiers(shift, alt, ctrl);
 
   update_mouse(mods);
 

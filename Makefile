@@ -62,7 +62,7 @@ c_srcs := $(wildcard *.c)
 rc_srcs := $(wildcard *.rc)
 objs := $(c_srcs:.c=.o) $(rc_srcs:.rc=.o)
 
-CFLAGS := -std=gnu99 -include std.h -Wall -Wextra -Wundef -Werror
+CFLAGS := -std=gnu99 -include std.h -Wall -Wextra -Wundef -Werror -Wno-error=array-bounds
 
 ifeq ($(shell VER=`$(CC) -dumpversion`; expr $${VER%.*} '>=' 4.5), 1)
   CFLAGS += -mtune=atom

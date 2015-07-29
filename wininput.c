@@ -321,7 +321,10 @@ win_key_down(WPARAM wp, LPARAM lp)
     altgr = ralt | ctrl_lalt_altgr;
 
   mod_keys mods = shift * MDK_SHIFT | alt * MDK_ALT | ctrl * MDK_CTRL;
-  keycolor_set_modifiers(shift, alt, ctrl);
+
+  keycolor_set_modifiers(shift * KEYCOLOR_MOD_SHIFT |
+                         alt * KEYCOLOR_MOD_ALT |
+                         ctrl * KEYCOLOR_MOD_CTRL);
 
   update_mouse(mods);
 
@@ -743,6 +746,13 @@ bool
 win_key_up(WPARAM wp, LPARAM unused(lp))
 {
   win_update_mouse();
+
+
+  mod_keys mods = get_mods();
+  int keycolor_mods = (mods & MDK_SHIFT)?KEYCOLOR_MOD_SHIFT:0 |
+    (mods & MDK_ALT)?KEYCOLOR_MOD_ALT:0 |
+    (mods & MDK_CTRL)?KEYCOLOR_MOD_CTRL:0;
+  keycolor_set_modifiers(keycolor_mods);
 
   if (wp != VK_MENU)
     return false;
